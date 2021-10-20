@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { StoreProvider } from 'easy-peasy;'
+import { StoreProvider } from 'easy-peasy';
 import App from './components/App/App';
 import { store } from './store/index';
 
