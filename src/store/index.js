@@ -1,7 +1,16 @@
-import axios from 'axios';
 import clues from '../clues.json';
-import { action, createStore } from 'easy-peasy';
+import { action, createStore, persist } from 'easy-peasy';
 
-export const store = createStore({
-    clues,
-});
+export const store = createStore(
+    persist({
+        clues,
+        currentClue: 0,
+        score: 0,
+        updateScore: action((state, score) => {
+            state.score += score;
+        }),
+        nextClue: action((state) => {
+            state.currentClue += 1;
+        })
+    })
+);
