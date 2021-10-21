@@ -1,22 +1,26 @@
 import { useStoreState, useStoreActions, useStoreRehydrated } from 'easy-peasy';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function App() {
   const clues = useStoreState((state) => state.clues);
   const score = useStoreState((state) => state.score);
   const currentClue = useStoreState((state) => state.currentClue);
+
   const updateScore = useStoreActions((actions) => actions.updateScore);
   const nextClue = useStoreActions((actions) => actions.nextClue);
+  const getClues = useStoreActions((actions) => actions.getClues);
 
   const isRehydrated = useStoreRehydrated();
   const [isCorrect, setIsCorrect] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
 
+  useEffect(() => { getClues() }, []);
+
   const isEmpty = (strng) => !strng.replace(' ');
 
   const validateAnswer = (e, userAnswer, correctAnswer) => {
     e.preventDefault();
-    if (correctAnswer.match(userAnswer) && userAnswer !== '.*' && !isEmpty(userAnswer)) {
+    if (correctAnswer.toLocaleLowerCase().match(userAnswer.toLocaleLowerCase()) && userAnswer !== '.*' && !isEmpty(userAnswer)) {
       setIsCorrect(true); 
       setUserAnswer('');
       nextClue();
@@ -30,7 +34,7 @@ function App() {
       <div className="">
           <h1>Score: { score }</h1>
           <h2 className="question">
-            { clues[currentClue].question }
+            { clues[currentClue]?.question }
           </h2>
         <form action="">
           <div className="input__group">
