@@ -1,26 +1,36 @@
-import { useStoreState, useStoreActions } from 'easy-peasy';
-import { useEffect, useState } from 'react';
+import { useStoreState, useStoreActions, useStoreRehydrated } from 'easy-peasy';
+import { useState } from 'react';
 
 function App() {
   const clues = useStoreState((state) => state.clues);
+  const score = useStoreState((state) => state.score);
+  const currentClue = useStoreState((state) => state.currentClue);
+  const updateScore = useStoreActions((actions) => actions.updateScore);
+  const nextClue = useStoreActions((actions) => actions.nextClue);
+
+  const isRehydrated = useStoreRehydrated();
   const [isCorrect, setIsCorrect] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
 
-  const currentQuestion = 0;
+  const isEmpty = (strng) => !strng.replace(' ');
 
   const validateAnswer = (e, userAnswer, correctAnswer) => {
     e.preventDefault();
-    if (correctAnswer.match(userAnswer) && userAnswer !== '.*') setIsCorrect(true);
+    if (correctAnswer.match(userAnswer) && userAnswer !== '.*' && !isEmpty(userAnswer)) {
+      setIsCorrect(true); 
+      setUserAnswer('');
+      nextClue();
+      updateScore(clues[currentClue].value);
+    }
     else setIsCorrect(false);
   };
 
-
-
-  return (
+  return isRehydrated ? (
     <div className="App">
       <div className="">
+          <h1>Score: { score }</h1>
           <h2 className="question">
-            { clues[currentQuestion].question }
+            { clues[currentClue].question }
           </h2>
         <form action="">
           <div className="input__group">
@@ -33,12 +43,12 @@ function App() {
             }
           </div>
           <div className="input__cta">
-            <button type="submit" onClick={ (e) => validateAnswer(e, userAnswer, clues[currentQuestion].answer) }>Submit</button>
+            <button type="submit" onClick={ (e) => validateAnswer(e, userAnswer, clues[currentClue].answer) }>Submit</button>
           </div>
         </form>
       </div>
     </div>
-  );
+  ) : (<span>Loading...</span>);
 }
 
 export default App;
