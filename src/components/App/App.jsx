@@ -29,6 +29,9 @@ function App() {
     else setIsCorrect(false);
   };
 
+  // Once the store is created, it will see if there is an existing store for the session
+  // if there is it will load store state from session storage otherwise create a new store
+  // useStoreRehydrated is provided by easy-peasy
   return isRehydrated ? (
     <div className="App">
       <div className="">

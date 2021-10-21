@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { action, createStore, persist, thunk } from 'easy-peasy';
 
+// for easy persistence through sessions you can surround your store object 
+// with persist();
 export const store = createStore(
     persist({
         clues: [],
